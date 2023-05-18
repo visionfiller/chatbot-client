@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import "./App.css";
 
 const data = {
@@ -6,8 +6,8 @@ const data = {
   pText: "I'm a cute chatbot!",
   p2Text: "I can help you with your horoscope",
   conversation: [
-    { role: "assistant", message: "Hello, how can I help you today?" },
-    { role: "user", message: "I need a horoscope reading" },
+    { role: "assistant", content: "Hello, how can I help you today?" },
+    { role: "user", content: "I need a horoscope reading" },
   ],
   isLoading: false
 };
@@ -15,36 +15,52 @@ const data = {
 function App() {
   const [conversation, setConversation] = React.useState(data.conversation);
   const [isLoading, setIsLoading] = React.useState(data.isLoading);
+ 
+ 
+
+
+
   const updateUserMessages = (newMessage) => {
     if (!newMessage) {
       return;
     }
-setIsLoading(true) //we set loading to true here to display the balls in the assistant message bubble while we wait for the response from the server
-    setConversation([
+    setIsLoading(true) //we set loading to true here to display the balls in the assistant message bubble while we wait for the response from the server
+    const newConversation =[
       ...conversation,
-      { role: "user", message: newMessage }
-        ]);
+      { role: "user", content: newMessage }
+    ];
 
     // send POST request to local server with the conversation payload for chat response 
     // "http://localhost:8088/chat", {//i will fill in this function later
-// it is necessary to temporarily use 'loading' as a message until we get a reponse from the server if we want to display the ellipses 
-  setConversation([
-    ...conversation, 
-    { role: "assistant", message: "Loading" }
-  ]);
-
-  //then i will set the assistant message in this conversation with the actual response from the assistant  
+    // it is necessary to temporarily use 'loading' as a message until we get a reponse from the server if we want to display the ellipses 
+    setConversation = [...newConversation]
 
 
+    
+    //then i will set the assistant message in this conversation with the actual response from the assistant  
+    fetch("http://localhost:8088/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(newConversation)
+    }).then(res => res.json())
+      .then((response) =>
+        setConversation([
+          ...newConversation,
+          { role: "assistant", content: response }
+        ]))
 
 
-  }; 
+
+
+  };
 
   const showMessages = () => {
     return conversation.map((message, index) => (
       <MessageBubble
         key={index}
-        message={message.message}
+        message={message.content}
         role={message.role}
         isLoading={isLoading}
       />
