@@ -13,7 +13,7 @@ body,
   width: 100vw;
   height: 100vh;
   margin: 0;
-  overflow: hidden;
+  overflow: scroll;
 }
 
 body {
@@ -105,6 +105,7 @@ body,
 }
 .app-container .chat-container .msg-container {
   background: rgba(255, 255, 255, 0.2);
+  height: 500px;
   padding: 15px 15px 0 15px;
   flex: auto;
   border: 4px solid #453a94;
